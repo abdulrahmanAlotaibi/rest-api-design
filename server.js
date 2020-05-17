@@ -8,7 +8,8 @@ const app = express();
 // parsed incoming requests to json format : application/json
 app.use(express.json({ extended: false }));
 
-app.use(morgan("dev"))
+app.use(morgan("dev"));
+
 // connect to the database
 connectDB();
 
