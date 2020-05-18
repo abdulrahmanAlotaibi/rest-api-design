@@ -2,6 +2,11 @@ const Roadmap = require("../models/Roadmap");
 const Path = require("../models/Path");
 const { validationResult } = require("express-validator");
 
+/**
+ * TODO:  complete updatePath()
+ *  FIXME: Add validation, Test methods
+ */
+
 exports.createRoadmap = async (req, res) => {
   // Bring all the errors from the validation process
   const errors = validationResult(req);
@@ -242,3 +247,5 @@ exports.updateRoadmap = async (req, res) => {
     });
   }
 };
+
+// TODO updatePath()

@@ -42,9 +42,10 @@ router.get("/:roadmapId/paths/", roadmapController.getAllPaths);
 // @access  Private
 router.delete("/:roadmapId/paths/", roadmapController.deleteRoadmap);
 
-// @route   GET api/v1/roadmaps/:roadmapId/paths
-// @desc    Get all paths
+// @route   PATCH api/v1/roadmaps/:roadmapId
+// @desc    Update partially a roadmap
 // @access  Private
 router.patch("/:roadmapId/paths/", roadmapController.updateRoadmap);
+
 
 module.exports = router;
