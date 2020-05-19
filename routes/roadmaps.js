@@ -12,7 +12,7 @@ router.post("/", validator.createRoadmap, roadmapController.createRoadmap);
 // @route   GET api/v1/roadmaps
 // @desc    Get all roadmaps
 // @access  Public
-router.get("/", validator.getAllRoadmaps, roadmapController.getAllRoadmaps);
+router.get("/", roadmapController.getAllRoadmaps);
 
 // @route   POST api/v1/roadmaps/:roadmapTitle/
 // @desc    Create a path inside a roadmap
@@ -27,7 +27,7 @@ router.post(
 // @desc    Delete a path
 // @access  Private
 router.delete(
-  "/:roadmapId/paths/:pathTitle",
+  "/:roadmapId/paths/:pathId",
   validator.deletePath,
   roadmapController.deletePath
 );
@@ -37,15 +37,28 @@ router.delete(
 // @access  Public
 router.get("/:roadmapId/paths/", roadmapController.getAllPaths);
 
-// @route   GET api/v1/roadmaps/:roadmapId/paths
-// @desc    Get all paths
+// @route   DELETE api/v1/roadmaps/:roadmapId/paths
+// @desc    Delete a rodamap
 // @access  Private
-router.delete("/:roadmapId/paths/", roadmapController.deleteRoadmap);
+router.delete("/:roadmapId/", roadmapController.deleteRoadmap);
 
 // @route   PATCH api/v1/roadmaps/:roadmapId
 // @desc    Update partially a roadmap
 // @access  Private
-router.patch("/:roadmapId/paths/", roadmapController.updateRoadmap);
+router.patch("/:roadmapId/", roadmapController.updateRoadmap);
 
+// @route   GET api/v1/roadmaps/:roadmapId
+// @desc    Get a roadmap
+// @access  Private TODO: Edit this in v2.0
+router.get("/:roadmapId/", validator.getRoadmap, roadmapController.getRoadmap);
+
+// @route   GET api/v1/roadmaps/:roadmapId/paths/:pathId
+// @desc    Get a path
+// @access  Private TODO: Edit this in v2.0
+router.get(
+  "/:roadmapId/paths/pathId",
+  validator.getPath,
+  roadmapController.getPath
+);
 
 module.exports = router;

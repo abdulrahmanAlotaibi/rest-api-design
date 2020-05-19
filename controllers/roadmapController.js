@@ -13,6 +13,7 @@ exports.createRoadmap = async (req, res) => {
 
   if (!errors.isEmpty()) {
     return res.status(422).json({
+      status: "failed",
       errors: errors.array(),
     });
   }
@@ -28,13 +29,14 @@ exports.createRoadmap = async (req, res) => {
 
     res.status(201).json({
       status: "success",
+      message: "roadmap has been created",
       data: roadmap,
     });
   } catch (err) {
     console.error(err.message);
     res.status(500).json({
       status: "failed",
-      message: "Server Error",
+      message: "Internal Server Error",
     });
   }
 };
@@ -45,6 +47,7 @@ exports.getAllRoadmaps = async (req, res) => {
 
   if (!errors.isEmpty()) {
     return res.status(422).json({
+      status: "failed",
       errors: errors.array(),
     });
   }
@@ -54,23 +57,53 @@ exports.getAllRoadmaps = async (req, res) => {
 
     res.status(200).json({
       status: "success",
+      message: "roadmaps has been retrieved",
       data: roadmaps,
     });
   } catch (err) {
     console.err(err);
     res.status(500).json({
       status: "failed",
-      message: "Server Error",
+      message: "Internal Server Error",
     });
   }
 };
 
+exports.getRoadmap = async (req, res) => {
+  // Bring all the errors from the validation process
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json({
+      status: "failed",
+      errors: errors.array(),
+    });
+  }
+  const roadmapId = req.params.roadmapId;
+
+  try {
+    const roadmap = await Path.findById(roadmapId).lean();
+
+    res.status(200).json({
+      status: "success",
+      message: "path has been retrieved",
+      data: roadmap,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      status: "failed",
+      message: "Internal Server Error",
+    });
+  }
+};
 exports.createPath = async (req, res) => {
   // Bring all the errors from the validation process
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
     return res.status(422).json({
+      status: "failed",
       errors: errors.array(),
     });
   }
@@ -104,13 +137,42 @@ exports.createPath = async (req, res) => {
 
     res.status(200).json({
       status: "success",
+      message: "path has been created",
       data: path,
     });
   } catch (err) {
     console.error(err);
     res.status(500).json({
       status: "failed",
-      message: "Server Error",
+      message: "Internal Server Error",
+    });
+  }
+};
+exports.getPath = async (req, res) => {
+  // Bring all the errors from the validation process
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json({
+      status: "failed",
+      errors: errors.array(),
+    });
+  }
+  const pathId = req.params.pathId;
+
+  try {
+    const path = await Path.findById(pathId).lean();
+
+    res.status(200).json({
+      status: "success",
+      message: "path has been retrieved",
+      data: path,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      status: "failed",
+      message: "Internal Server Error",
     });
   }
 };
@@ -121,37 +183,36 @@ exports.deletePath = async (req, res) => {
 
   if (!errors.isEmpty()) {
     return res.status(422).json({
+      status: "failed",
       errors: errors.array(),
     });
   }
 
-  const { roadmapId, pathTitle } = req.params;
+  const { roadmapId, pathId } = req.params;
 
   try {
     const roadmap = await Roadmap.findById(roadmapId);
 
-    const path = await Path.remove({ title: pathTitle });
+    const path = await Path.findById(pathId);
 
-    roadmap.paths = roadmap.paths.filter((p) => p.title === pathTitle);
+    roadmap.paths = roadmap.paths.filter((p) => p._id === pathId);
 
     // Parallal Requests
     await Promise.all([path.remove(), roadmap.save()]);
 
     res.status(204).json({
       status: "success",
-      message: "Path has been deleted",
+      message: "path has been deleted",
       data: path,
     });
   } catch (err) {
     console.error(err);
     res.status(500).json({
       status: "failed",
-      message: "Server Error",
+      message: "Internal Server Error",
     });
   }
 };
-
-// TODO: GetAllPaths()
 
 exports.getAllPaths = async (req, res) => {
   // Bring all the errors from the validation process
@@ -159,6 +220,7 @@ exports.getAllPaths = async (req, res) => {
 
   if (!errors.isEmpty()) {
     return res.status(422).json({
+      status: "failed",
       errors: errors.array(),
     });
   }
@@ -170,6 +232,7 @@ exports.getAllPaths = async (req, res) => {
 
     res.status(200).json({
       status: "success",
+      message: "Paths has been retrieved",
       data: allPaths,
     });
   } catch (err) {
@@ -187,6 +250,7 @@ exports.deleteRoadmap = async (req, res) => {
 
   if (!errors.isEmpty()) {
     return res.status(422).json({
+      status: "failed",
       errors: errors.array(),
     });
   }
@@ -216,34 +280,34 @@ exports.updateRoadmap = async (req, res) => {
 
   if (!errors.isEmpty()) {
     return res.status(422).json({
+      status: "failed",
       errors: errors.array(),
     });
   }
+
   const roadmapId = req.params.roadmapId;
 
   const properties = req.body.properties;
 
-  const updatedProprties = {};
-
-  for (const prop of properties) {
-    updatedProprties[prop.name] = prop.value;
-  }
-
   try {
-    const roadmap = await Roadmap.update(
+    const roadmap = await Roadmap.findOneAndUpdate(
       { _id: roadmapId },
-      { $set: updatedProprties }
-    ).lean();
+      properties,
+      { new: true }
+    )
+      .lean()
+      .exec();
 
-    res.status(204).json({
+    res.status(200).json({
       status: "success",
+      message: "The roadmap has been updated",
       data: roadmap,
     });
   } catch (err) {
     console.log(err);
     res.status(500).json({
       status: "failed",
-      message: "Server Error",
+      message: "Roadmap not found",
     });
   }
 };

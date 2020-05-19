@@ -7,7 +7,10 @@ const RoadmapSchema = new Schema({
     required: true,
     unique: true,
   },
-  description: String,
+  description: {
+    type: String,
+    required: true,
+  },
   tags: [String],
   date: {
     type: Date,
