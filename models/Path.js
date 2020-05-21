@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+// FIXME: Validation not working
 const PathSchema = new Schema({
   title: {
     type: String,

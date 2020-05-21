@@ -2,11 +2,7 @@ const Roadmap = require("../models/Roadmap");
 const Path = require("../models/Path");
 const { validationResult } = require("express-validator");
 
-/**
- * TODO:  complete updatePath()
- *  FIXME: Add validation, Test methods
- */
-
+// FIXME: title are duplicated!
 exports.createRoadmap = async (req, res) => {
   // Bring all the errors from the validation process
   const errors = validationResult(req);
@@ -19,10 +15,12 @@ exports.createRoadmap = async (req, res) => {
   }
 
   try {
+    const tags = req.body.tags.split(",");
+
     const newRoadmap = new Roadmap({
       title: req.body.title,
       description: req.body.description,
-      tags: req.body.tags,
+      tags: tags,
     });
 
     const roadmap = await newRoadmap.save();
@@ -82,11 +80,11 @@ exports.getRoadmap = async (req, res) => {
   const roadmapId = req.params.roadmapId;
 
   try {
-    const roadmap = await Path.findById(roadmapId).lean();
+    const roadmap = await Roadmap.findById(roadmapId).lean();
 
     res.status(200).json({
       status: "success",
-      message: "path has been retrieved",
+      message: "roadmap has been retrieved",
       data: roadmap,
     });
   } catch (err) {
@@ -114,10 +112,6 @@ exports.createPath = async (req, res) => {
     const roadmapId = req.params.roadmapId;
 
     const roadmap = await Roadmap.findById(roadmapId);
-
-    if (!roadmap) {
-      throw Error("roadmap not found");
-    }
 
     const path = new Path({
       title: title,
@@ -260,6 +254,8 @@ exports.deleteRoadmap = async (req, res) => {
   try {
     const roadmap = await Roadmap.deleteOne({ _id: roadmapId }).lean();
 
+    await Path.deleteMany({ roadmapId: roadmapId }).lean();
+
     res.status(204).json({
       status: "success",
       message: "Roadmap has been deleted",
@@ -288,12 +284,11 @@ exports.updateRoadmap = async (req, res) => {
   const roadmapId = req.params.roadmapId;
 
   const properties = req.body.properties;
-
+  console.log(properties);
   try {
-    const roadmap = await Roadmap.findOneAndUpdate(
+    const roadmap = await Roadmap.updateOne(
       { _id: roadmapId },
-      properties,
-      { new: true }
+      { $set: properties }
     )
       .lean()
       .exec();
@@ -312,4 +307,36 @@ exports.updateRoadmap = async (req, res) => {
   }
 };
 
-// TODO updatePath()
+exports.updatePath = async (req, res) => {
+  // Bring all the errors from the validation process
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json({
+      status: "failed",
+      errors: errors.array(),
+    });
+  }
+
+  const pathId = req.params.pathId;
+
+  const properties = req.body.properties;
+
+  try {
+    const path = await Path.updateOne({ _id: pathId }, { $set: properties })
+      .lean()
+      .exec();
+
+    res.status(200).json({
+      status: "success",
+      message: "The path has been updated",
+      data: path,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      status: "failed",
+      message: "path not found",
+    });
+  }
+};
