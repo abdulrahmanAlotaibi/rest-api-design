@@ -18,6 +18,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Define routes
 app.use("/api/v1/roadmaps", require("./routes/roadmaps"));
+app.use("/api/v1/roadmaps/:roadmapId/paths", require("./routes/paths"));
 
 app.use("/", (req, res) => {
   res.status(404).json({
