@@ -11,7 +11,7 @@ This project is inspired by an open-source project https://roadmap.sh/frontend
 
 
 ## Usefull Resources  
-- [REST API Design fundemtals: Microsoft Azure docs](https://docs.microsoft.com/en-us/azure/architecture/best-practices/api-design)
-- [Error handling in REST API Design: RFC7807 Standards](https://tools.ietf.org/html/rfc7807)
-- [Error handling in REST API DESIGN: Google Standards](https://developers.google.com/search-ads/v2/standard-error-responses)
+- [REST API design fundamentals: Microsoft Azure docs](https://docs.microsoft.com/en-us/azure/architecture/best-practices/api-design)
+- [Error handling in REST API design: RFC7807 Standards](https://tools.ietf.org/html/rfc7807)
+- [Error handling in REST API design: Google Standards](https://developers.google.com/search-ads/v2/standard-error-responses)
 
