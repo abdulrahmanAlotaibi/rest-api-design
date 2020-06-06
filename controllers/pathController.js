@@ -2,6 +2,10 @@ const Roadmap = require("../models/Roadmap");
 const Path = require("../models/Path");
 const { validationResult } = require("express-validator");
 
+/*
+- FIXME: req.params: undefined -> maybe because the the use route in server.js
+- TODO: key duplication in the validation
+*/
 exports.createPath = async (req, res) => {
   // Bring all the errors from the validation process
   const errors = validationResult(req);
@@ -14,16 +18,13 @@ exports.createPath = async (req, res) => {
   }
 
   try {
-    const { title, description, levels, links } = req.body;
-
-    const roadmapId = req.params.roadmapId;
+    const { title, description, links, roadmapId } = req.body;
 
     const roadmap = await Roadmap.findById(roadmapId);
 
     const path = new Path({
       title: title,
       description: description,
-      levels: levels,
       links: links,
       roadmapTitle: roadmap.title,
       roadmapId: roadmapId,
@@ -91,8 +92,8 @@ exports.getAllPaths = async (req, res) => {
   }
 
   try {
-    const { roadmapId } = req.params;
-
+    const { roadmapId } = req.query;
+    console.log(roadmapId);
     const allPaths = await Path.find({ roadmapId: roadmapId }).lean();
 
     res.status(200).json({

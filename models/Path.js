@@ -9,24 +9,15 @@ const PathSchema = new Schema({
     unique: true,
   },
   description: String,
-  levels: [
-    {
-      title: {
-        type: String,
-        required: true,
-      },
-      description: String,
-    },
-  ],
   links: [
     {
       name: {
         type: String,
-        required: true,
+        // required: true,
       },
       href: {
         type: String,
-        required: true,
+        // required: true,
       },
     },
   ],

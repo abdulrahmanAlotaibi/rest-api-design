@@ -1,61 +1,54 @@
-const { check, validationResult, param } = require("express-validator");
+const { check, param } = require("express-validator");
+
+/**
+ * This files represents the validation process
+ */
 
 exports.createRoadmap = [
-  check("title", "title is required").isString().not().isEmpty(),
+  check("title", "title is required")
+    .not()
+    .isEmpty({ ignore_whitespace: true }),
   check("description", "description is required")
-    .trim()
-    .isString({ ignore_whitespace: false })
     .not()
-    .isEmpty(),
-  check("tags", "tags is required")
-    .trim()
-    .isString({ ignore_whitespace: false })
-    .not()
-    .isEmpty(),
+    .isEmpty({ ignore_whitespace: true }),
+  check("tags", "tags is required").not().isEmpty({ ignore_whitespace: true }),
 ];
 
 exports.getRoadmap = [
   param("roadmapId", "roadmap id is required")
-    .trim()
-    .isString({ ignore_whitespace: false })
     .not()
-    .isEmpty(),
+    .isEmpty({ ignore_whitespace: true }),
 ];
 
 exports.getPath = [
   param("pathId", "path id is required")
-    .trim()
-    .isString({ ignore_whitespace: false })
     .not()
-    .isEmpty()
-    .exists({ checkNull: true }),
+    .isEmpty({ ignore_whitespace: true }),
 ];
 
 exports.deletePath = [
-  param("pathId", "path id is required").trim().isString().not().isEmpty(),
-  param("roadmapId", "roadmap id is required")
-    .isString({ ignore_whitespace: false })
-    .trim()
+  param("pathId", "path id is required")
+    .isString()
     .not()
-    .isEmpty(),
-];
-exports.createPath = [
-  check("title", "title is required").trim().isString().not().isEmpty(),
-  check("description", "description is required").trim().not().isEmpty(),
-  check("levels", "levels are required").isArray().isLength({ min: 1 }),
-  check("links", "links are not valid").isArray().isLength({ min: 1 }),
+    .isEmpty({ ignore_whitespace: true }),
   param("roadmapId", "roadmap id is required")
-    .isString({ ignore_whitespace: false })
-    .trim()
     .not()
-    .isEmpty()
-    .exists({ checkFalsy: true }),
+    .isEmpty({ ignore_whitespace: true }),
 ];
 
-exports.updatePath = [
-  param("pathId", "path id is required")
-    .trim()
-    .isString({ ignore_whitespace: false })
+exports.createPath = [
+  check("title", "title is required")
     .not()
-    .isEmpty(),
+    .isEmpty({ ignore_whitespace: true }),
+  check("description", "description is required")
+    .not()
+    .isEmpty({ ignore_whitespace: true }),
+  check("links", "links are not valid").exists({
+    checkFalsy: true,
+  }),
+  check("roadmapId", "roadmap id is required")
+    .not()
+    .isEmpty({ ignore_whitespace: true }),
 ];
+
+exports.updatePath = [];

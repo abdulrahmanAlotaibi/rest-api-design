@@ -8,7 +8,7 @@ exports.createRoadmap = async (req, res) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return res.status(422).json({
+    return res.status(400).json({
       status: "failed",
       errors: errors.array(),
     });
@@ -108,12 +108,12 @@ exports.deleteRoadmap = async (req, res) => {
   }
 
   const roadmapId = req.params.roadmapId;
-
+  console.log(">>",roadmapId)
   try {
     const roadmap = await Roadmap.deleteOne({ _id: roadmapId }).lean();
 
     await Path.deleteMany({ roadmapId: roadmapId }).lean();
-
+    
     res.status(204).json({
       status: "success",
       message: "Roadmap has been deleted",

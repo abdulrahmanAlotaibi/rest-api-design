@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
-
-const roadmapController = require("../controllers/roadmapController");
 const validator = require("../util/validator");
+const roadmapController = require("../controllers/roadmapController");
 
 // @route   POST api/v1/roadmaps
 // @desc    Create a roadmap
@@ -11,7 +10,7 @@ router.post("/", validator.createRoadmap, roadmapController.createRoadmap);
 
 // @route   GET api/v1/roadmaps/:roadmapId
 // @desc    Get a roadmap
-// @access  Private TODO: Edit this in v2.0 -> auth
+// @access  Private
 router.get("/:roadmapId/", validator.getRoadmap, roadmapController.getRoadmap);
 
 // @route   GET api/v1/roadmaps
